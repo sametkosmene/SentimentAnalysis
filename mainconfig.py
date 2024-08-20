@@ -1,0 +1,5 @@
+FLICKR_API_KEY = 'db824c57a0f3218bd1af797833b19a6f'
+FLICKR_SECRET = '305c54e517f2c067'
+
+KAFKA_TOPIC = 'flickr_photos'
+KAFKA_SERVER = 'localhost:9092'

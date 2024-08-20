@@ -1,0 +1,1 @@
+spark-submit --master local[2] C:/Users/kosmens/OneDrive/Desktop/Private/Projects/Python/FlickrSentimentAnalysis/SentimentAnalysis_V2src/consumer/spark_streaming.py
