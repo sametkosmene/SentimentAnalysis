@@ -1,0 +1,12 @@
+-- Create Topic
+.\bin\windows\kafka-topics.bat --create --topic flickr_photos --bootstrap-server localhost:9092 --partitions 3 --replication-factor 1
+
+-- Describe Topic
+.\bin\windows\kafka-topics.bat --describe --topic flickr_photos --bootstrap-server localhost:9092
+
+
+-- Increase Partitions Sample
+.\bin\windows\kafka-topics.bat --alter --topic flickr_photos --partitions 6 --bootstrap-server localhost:9092
+
+-- Example Monitoring
+.\bin\windows\kafka-topics.bat kafka.tools.JmxTool --report

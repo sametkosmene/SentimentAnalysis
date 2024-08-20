@@ -1,5 +1,5 @@
 flickr:
-  api_key: "your_flickr_api_key"
+  api_key: "b824c57a0f3218bd1af797833b19a6f"
 
 kafka:
   topic: "flickr_photos"

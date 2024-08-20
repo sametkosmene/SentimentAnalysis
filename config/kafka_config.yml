@@ -1,0 +1,38 @@
+# Kafka Configuration File
+
+# Kafka topic where the Flickr photo metadata will be published
+kafka_topic: "flickr_photos"
+
+# List of Kafka broker servers (use commas to separate multiple brokers)
+kafka_servers: "localhost:9092"
+
+# Kafka Producer settings
+producer:
+  # Number of retries if the producer fails to send data
+  retries: 5
+  
+  # Timeout for a request to the Kafka broker (in milliseconds)
+  request_timeout_ms: 10000
+  
+  # How often the producer sends records to Kafka (in milliseconds)
+  linger_ms: 100
+  
+  # The size of the buffer for unsent records (in bytes)
+  buffer_memory: 33554432
+
+# Kafka Consumer settings
+consumer:
+  # Group ID for the Kafka consumer (must be unique for each consumer group)
+  group_id: "flickr-sentiment-analysis-group"
+  
+  # Auto offset reset policy (earliest, latest)
+  auto_offset_reset: "earliest"
+  
+  # Enable or disable auto commit of the consumer's offsets
+  enable_auto_commit: true
+  
+  # Interval between auto commits (in milliseconds)
+  auto_commit_interval_ms: 5000
+  
+  # Maximum records per poll
+  max_poll_records: 500

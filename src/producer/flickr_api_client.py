@@ -12,11 +12,12 @@ class FlickrAPIClient:
             'api_key': self.api_key,
             'lat': lat,
             'lon': lon,
-            'tags': tags,
+            'radius': 5,
             'format': 'json',
             'nojsoncallback': 1,
             'page': page,
-            'per_page': per_page
+            'per_page': per_page,
+            'extras': 'tags'
         }
         response = requests.get(self.base_url, params=params)
         if response.status_code == 200:

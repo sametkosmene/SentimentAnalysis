@@ -12,7 +12,7 @@ if __name__ == "__main__":
     kafka_servers = config['kafka']['servers'].split(',')
 
     producer = FlickrKafkaProducer(api_key, kafka_topic, kafka_servers)
-    producer.fetch_and_send(lat=40.7128, lon=-74.0060)  # New York City coordinates
+    producer.fetch_and_send(lat=51.91991, lon=4.47991)  # New York City coordinates
     producer.close()
 
     consumer = SparkStreamingConsumer(kafka_topic, kafka_servers)
