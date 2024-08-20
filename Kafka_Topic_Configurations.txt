@@ -10,3 +10,6 @@
 
 -- Example Monitoring
 .\bin\windows\kafka-topics.bat kafka.tools.JmxTool --report
+
+-- Another Test 
+.\bin\windows\kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic flickr_photos --from-beginning

@@ -1,6 +1,15 @@
 # src/main.py
+import sys
+import os
+
+# Add the parent directory of 'src' to the Python path
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
 from src.producer.kafka_producer import FlickrKafkaProducer
+from src.utils.config import Config
+from src.utils.logging_util import setup_logging
 from src.consumer.spark_streaming import SparkStreamingConsumer
+
 import configparser
 
 if __name__ == "__main__":
