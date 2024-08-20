@@ -1,0 +1,6 @@
+flickr:
+  api_key: "your_flickr_api_key"
+
+kafka:
+  topic: "flickr_photos"
+  servers: "localhost:9092"

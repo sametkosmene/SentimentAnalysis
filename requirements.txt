@@ -1,33 +1,4 @@
-# Apache Kafka dependencies
+requests==2.28.1
 kafka-python==2.0.2
-
-# Apache Spark dependencies
-pyspark==3.5.0
-
-# Snowflake connector for Python
-snowflake-connector-python==3.1.3
-
-# Data manipulation and utilities
-pandas==2.1.1
-
-# Unit testing and mocking
-pytest==7.4.2
-unittest-xml-reporting==3.0.4
-
-# For environment variable management
-python-dotenv==1.0.0
-
-# Additional utilities
-requests==2.31.0
-
-# For connecting with Apache Kafka
-confluent-kafka==2.2.0
-
-# Optional: If you're using Jupyter notebooks for exploration
-jupyterlab==4.0.5
-
-# For logging
-loguru==0.7.0
-
-# For running in a production environment
-gunicorn==21.2.0
+pyspark==3.4.1
+textblob==0.17.1
