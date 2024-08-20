@@ -1,11 +1,16 @@
 # src/main.py
 import sys
 import os
+import subprocess
 from src.producer.kafka_producer import FlickrKafkaProducer
 from src.utils.config import Config
 from src.utils.logging_util import setup_logging
 from src.consumer.spark_streaming import SparkStreamingConsumer
 from mainconfig import FLICKR_API_KEY, KAFKA_SERVER, KAFKA_TOPIC
+
+def start_reporting_server():
+    """Start the Flask HTTP server for real-time reporting."""
+    subprocess.Popen(["python", "src/reporting/reporting_server.py"])
 
 def main():
     # Print the current working directory and PYTHONPATH for debugging
@@ -34,6 +39,8 @@ def main():
 
     # Process the stream to analyze sentiments
     consumer.process_stream()
+    
+    start_reporting_server()
 
 if __name__ == "__main__":
     main()
