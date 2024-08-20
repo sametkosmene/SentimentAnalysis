@@ -1,46 +1,60 @@
 # src/consumer/spark_streaming.py
-
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import explode, split, col, count
-from pyspark.sql.types import StringType
+from pyspark.sql.functions import explode, split, col, desc, dense_rank
+from pyspark.sql.types import StructType, StringType, IntegerType
+from pyspark.sql.window import Window
 
-def process_stream():
-    # Initialize SparkSession
-    spark = SparkSession.builder \
-        .appName("FlickrSentimentAnalysis") \
-        .getOrCreate()
+class SparkStreamingConsumer:
+    def __init__(self, kafka_topic, kafka_servers):
+        self.spark = SparkSession.builder \
+            .appName("FlickrSentimentAnalysis") \
+            .getOrCreate()
+        self.kafka_topic = kafka_topic
+        self.kafka_servers = kafka_servers
 
-    # Kafka configurations
-    kafka_bootstrap_servers = "localhost:9092"
-    kafka_topic = "flickr_photos"
+    def process_stream(self):
+        schema = StructType() \
+            .add("id", StringType()) \
+            .add("title", StringType()) \
+            .add("tags", StringType()) \
+            .add("owner", StringType()) \
+            .add("lat", StringType()) \
+            .add("lon", StringType())
 
-    # Read streaming data from Kafka
-    df = spark \
-        .readStream \
-        .format("kafka") \
-        .option("kafka.bootstrap.servers", kafka_bootstrap_servers) \
-        .option("subscribe", kafka_topic) \
-        .load()
+        # Reading from Kafka
+        df = self.spark.readStream \
+            .format("kafka") \
+            .option("kafka.bootstrap.servers", self.kafka_servers) \
+            .option("subscribe", self.kafka_topic) \
+            .load() \
+            .selectExpr("CAST(value AS STRING)")
 
-    # Extract the message value
-    df = df.selectExpr("CAST(value AS STRING)")
+        # Parsing JSON data
+        df = df.withColumn("data", from_json(col("value"), schema)).select("data.*")
 
-    # Split tags and count occurrences
-    df = df.withColumn("tags", split(col("value"), ","))
-    df = df.withColumn("tag", explode(col("tags")))
+        # Splitting tags into separate rows
+        df = df.withColumn("tag", explode(split(col("tags"), " ")))
 
-    # Group by tag and count occurrences
-    tag_counts = df.groupBy("tag").count()
+        # Counting the tags for each (latitude, longitude) pair
+        df = df.groupBy("lat", "lon", "tag").count()
 
-    # Write the results to the console (or you can write to a file, database, etc.)
-    query = tag_counts \
-        .writeStream \
-        .outputMode("complete") \
-        .format("console") \
-        .start()
+        # Selecting the top 10 tags per (lat, lon) pair
+        window = Window.partitionBy("lat", "lon").orderBy(desc("count"))
+        windowed_df = df.withColumn("rank", dense_rank().over(window)) \
+                        .filter(col("rank") <= 10) \
+                        .drop("rank")
 
-    # Await termination
-    query.awaitTermination()
+        # Writing the results to console in real-time
+        query = windowed_df.writeStream \
+            .outputMode("complete") \
+            .format("console") \
+            .start()
+
+        query.awaitTermination()
 
 if __name__ == "__main__":
-    process_stream()
+    kafka_topic = "flickr_photos"
+    kafka_servers = ["localhost:9092"]
+
+    consumer = SparkStreamingConsumer(kafka_topic, kafka_servers)
+    consumer.process_stream()
